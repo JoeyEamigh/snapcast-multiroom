@@ -1,4 +1,4 @@
 [submodule "snapcast-control"]
 	path = snapcast-control
 	url = https://github.com/JoeyEamigh/snapcast-control.git
-	brach = main
+	branch = main
