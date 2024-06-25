@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JoeyEamigh/snapcast-multiroom/main/product.schema.json",
+  "serverAddress": "127.0.0.1:1705",
+  "devices": [
+    {
+      "id": "device-1",
+      "preferredName": "Device One"
+    },
+    {
+      "id": "device-1-subwoofer",
+      "preferredName": "Device One Subwoofer"
+    },
+    {
+      "id": "device-2",
+      "preferredName": "Device Two"
+    }
+  ],
+  "groups": [
+    {
+      "name": "group-1",
+      "devices": ["device-1", "device-1-subwoofer"]
+    },
+    {
+      "name": "group-2",
+      "devices": ["device-2"]
+    }
+  ],
+  "zones": [
+    {
+      "id": "Group-One-Spotify",
+      "stream": "librespot:///usr/bin/librespot?name=Group-One-Spotify&devicename=Group One&bitrate=320&autoplay=true&volume=50&params=--device-type%20speaker",
+      "groups": ["group-1"]
+    },
+    {
+      "id": "Group-Two-Spotify",
+      "stream": "librespot:///usr/bin/librespot?name=Group-Two-Spotify&devicename=Group Two&bitrate=320&autoplay=true&volume=50&params=--device-type%20speaker",
+      "groups": ["group-2"]
+    },
+    {
+      "id": "Both-Groups-Spotify",
+      "stream": "librespot:///usr/bin/librespot?name=Both-Groups-Spotify&devicename=Both Groups&bitrate=320&autoplay=true&volume=50&params=--device-type%20speaker",
+      "groups": ["group-1", "group-2"]
+    }
+  ]
+}

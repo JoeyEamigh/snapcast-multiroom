@@ -1,0 +1,15 @@
+**
+
+!**/.rustfmt.toml
+!**/rust-toolchain.toml
+
+# submodule sources
+!snapcast-control/README.md
+!snapcast-control/Cargo.toml
+!snapcast-control/Cargo.lock
+!snapcast-control/src
+
+# sources
+!Cargo.toml
+!Cargo.lock
+!src

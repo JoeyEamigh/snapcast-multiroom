@@ -1,0 +1,13 @@
+[package]
+name = "snapcast-multiroom"
+version = "0.1.0"
+edition = "2021"
+resolver = "2"
+
+[dependencies]
+serde = { version = "1.0.203", features = ["derive"] }
+serde_json = "1.0.117"
+snapcast-control = { version = "*", path = "./snapcast-control" }
+tokio = { version = "1.38.0", features = ["full"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }

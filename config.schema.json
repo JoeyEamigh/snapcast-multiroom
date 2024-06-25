@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/JoeyEamigh/snapcast-multiroom/main/product.schema.json",
+  "title": "snapcast-multiroom config",
+  "description": "config for snapcast-multiroom",
+  "type": "object",
+  "properties": {
+    "serverAddress": {
+      "description": "the address of the snapcast server in the form IP:PORT",
+      "type": "string"
+    },
+    "devices": {
+      "description": "the snapcast devices to be controlled by snapcast-multiroom",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "the snapcast id of the device",
+            "type": "string"
+          },
+          "preferredName": {
+            "description": "the preferred name for the device (will be set by snapcast-multiroom)",
+            "type": "string"
+          }
+        },
+        "required": ["id"]
+      }
+    },
+    "groups": {
+      "description": "the snapcast devices to be controlled by snapcast-multiroom",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "the name of the group",
+            "type": "string"
+          },
+          "devices": {
+            "description": "which devices are in the group",
+            "type": "array",
+            "items": {
+              "id": "string"
+            }
+          }
+        },
+        "required": ["devices"]
+      }
+    },
+    "zones": {
+      "description": "the zones to be controlled by snapcast-multiroom",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "the id of the stream - generally the name set in the stream uri",
+            "type": "string"
+          },
+          "stream": {
+            "description": "the stream to be created for the zone e.g. librespot:///usr/bin/librespot?name=<stream_name>&devicename=<zone_name>&bitrate=320&volume=100&normalize=false&autoplay=true",
+            "type": "string"
+          },
+          "groups": {
+            "description": "the groups in the zone",
+            "type": "array",
+            "items": {
+              "id": "string"
+            }
+          }
+        },
+        "required": ["id", "stream", "groups"]
+      }
+    }
+  },
+  "required": ["serverAddress", "devices", "groups", "zones"]
+}
