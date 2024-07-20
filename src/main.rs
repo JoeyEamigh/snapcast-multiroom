@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 
 use config::MultiroomConfig;
-use snapcast_control::{ClientError, Notification, SnapcastConnection, ValidMessage};
+use snapcast_control::{stream::StreamStatus, ClientError, Notification, SnapcastConnection, ValidMessage};
 
 mod config;
 mod monitoring;
@@ -37,10 +37,7 @@ async fn main() {
           tracing::error!("decoder error: {:#?}", err);
         }
       },
-      _ = tokio::signal::ctrl_c() => {
-        tracing::info!("ctrl-c received, shutting down");
-        break;
-      }
+      _ = monitoring::wait_for_signal() => break,
     }
   }
 }
@@ -53,12 +50,25 @@ async fn handle_notification(
 ) -> Result<(), ClientError> {
   if let Notification::StreamOnUpdate { params } = method {
     if let Some(stream_config) = config.zones.get(&params.id) {
-      tracing::info!("setting groups to stream: {}", params.id);
+      match params.stream.status {
+        StreamStatus::Playing => {
+          tracing::debug!("handling stream playing update for: {}", params.id);
+          let state = client.state.clone();
 
-      for group in &stream_config.groups {
-        if let Some(group_id) = group_mapping.get(group) {
-          client.group_set_stream(group_id.clone(), params.id.clone()).await?;
+          for group in &stream_config.groups {
+            if let Some(group_id) = group_mapping.get(group)
+              && let Some(state_group) = state.groups.get(group_id)
+              && state_group.stream_id != params.id
+            {
+              tracing::info!("setting group {} to stream: {}", group, params.id);
+
+              client.group_set_stream(group_id.clone(), params.id.clone()).await?;
+            } else {
+              tracing::debug!("no need to update group {} for stream: {}", group, params.id);
+            }
+          }
         }
+        _ => tracing::debug!("ignoring stream update for: {}", params.id),
       }
     } else {
       tracing::debug!("no config for stream: {}", params.id);
@@ -125,6 +135,19 @@ async fn initial_setup(
 
         client
           .group_set_clients(likely_group.id.clone(), group.devices.iter().cloned().collect())
+          .await?;
+      }
+
+      if let Some((default_zone, _)) = config
+        .zones
+        .iter()
+        .find(|(_, z)| z.groups.len() == 1 && z.groups.contains(&group.name))
+        && likely_group.stream_id != *default_zone
+      {
+        tracing::debug!("setting default stream for group {}: {}", &group.name, default_zone);
+
+        client
+          .group_set_stream(likely_group.id.clone(), default_zone.clone())
           .await?;
       }
     }

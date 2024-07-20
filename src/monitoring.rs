@@ -34,3 +34,26 @@ pub fn init_logger() {
     .with(fmt::layer().with_filter(filter))
     .init();
 }
+
+#[cfg(unix)]
+pub async fn wait_for_signal() {
+  use tokio::signal::{
+    ctrl_c,
+    unix::{signal, SignalKind},
+  };
+
+  let mut signal_terminate = signal(SignalKind::terminate()).expect("could not create signal handler");
+
+  tokio::select! {
+    _ = signal_terminate.recv() => tracing::info!("received SIGTERM, shutting down"),
+    _ = ctrl_c() => tracing::info!("ctrl-c received, shutting down"),
+  };
+}
+
+#[cfg(windows)]
+pub async fn wait_for_signal() {
+  use tokio::signal::ctrl_c;
+
+  let _ = ctrl_c().await;
+  tracing::info!("ctrl-c received, shutting down");
+}

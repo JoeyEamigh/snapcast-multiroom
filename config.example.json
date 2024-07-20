@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JoeyEamigh/snapcast-multiroom/main/product.schema.json",
+  "$schema": "https://raw.githubusercontent.com/JoeyEamigh/snapcast-multiroom/main/config.schema.json",
   "serverAddress": "127.0.0.1:1705",
   "devices": [
     {
