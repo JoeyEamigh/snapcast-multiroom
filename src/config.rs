@@ -35,10 +35,21 @@ pub struct MultiroomConfigGroup {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct MultiroomConfigZone {
   pub id: String,
   pub stream: String,
   pub groups: HashSet<String>,
+  #[serde(default)]
+  pub volume_control: VolumeControl,
+}
+
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub enum VolumeControl {
+  #[default]
+  Clients,
+  Source,
 }
 
 pub fn init_config() -> MultiroomConfig {
@@ -80,8 +91,31 @@ mod tests {
   use super::*;
 
   #[test]
+  fn zones_keep_pushing_client_volume_unless_told_otherwise() {
+    let librespot = r#"{"id":"A","stream":"librespot:///usr/bin/librespot","groups":["g"]}"#;
+    let zone: MultiroomConfigZone = serde_json::from_str(librespot).expect("could not deserialize zone");
+    assert_eq!(zone.volume_control, VolumeControl::Clients);
+
+    let soloist = r#"{"id":"A","stream":"pipe:///run/snapfifo/a","groups":["g"],"volumeControl":"source"}"#;
+    let zone: MultiroomConfigZone = serde_json::from_str(soloist).expect("could not deserialize zone");
+    assert_eq!(zone.volume_control, VolumeControl::Source);
+  }
+
+  #[test]
   fn test_deserialize_config() {
     let config_json = include_str!("../config.example.json");
-    let _: MultiroomConfig = serde_json::from_str(config_json).expect("could not deserialize config");
+    let _: MultiroomConfigJson = serde_json::from_str(config_json).expect("could not deserialize config");
+  }
+
+  #[test]
+  fn test_deserialize_soloist_config() {
+    let config_json = include_str!("../config.soloist.example.json");
+    let config: MultiroomConfigJson =
+      serde_json::from_str(config_json).expect("could not deserialize soloist config");
+
+    assert!(
+      config.zones.iter().all(|zone| zone.volume_control == VolumeControl::Source),
+      "soloist zones must let the source own the master volume"
+    );
   }
 }

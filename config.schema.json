@@ -24,7 +24,9 @@
             "type": "string"
           }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       }
     },
     "groups": {
@@ -45,7 +47,9 @@
             }
           }
         },
-        "required": ["devices"]
+        "required": [
+          "devices"
+        ]
       }
     },
     "zones": {
@@ -68,11 +72,29 @@
             "items": {
               "id": "string"
             }
+          },
+          "volumeControl": {
+            "description": "where the zone's master volume is applied. \"clients\" (the default) pushes the volume the stream reports down to every snapcast client in the zone, which is what librespot zones want. \"source\" means the source already attenuates before the stream, as snapcast-soloist does, so client volumes are left alone and act as per-client trims",
+            "type": "string",
+            "enum": [
+              "clients",
+              "source"
+            ],
+            "default": "clients"
           }
         },
-        "required": ["id", "stream", "groups"]
+        "required": [
+          "id",
+          "stream",
+          "groups"
+        ]
       }
     }
   },
-  "required": ["serverAddress", "devices", "groups", "zones"]
+  "required": [
+    "serverAddress",
+    "devices",
+    "groups",
+    "zones"
+  ]
 }

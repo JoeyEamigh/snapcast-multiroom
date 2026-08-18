@@ -14,6 +14,10 @@ docker run \
   ghcr.io/joeyeamigh/snapcast-multiroom:latest
 ```
 
+### Soloist zones
+
+Zones backed by [snapcast-soloist](https://github.com/JoeyEamigh/snapcast-soloist) are `pipe://` streams with a `controlscript`, and the source applies the master volume itself. Those zones set `"volumeControl": "source"` so their volume is not applied a second time at the clients. See [config.soloist.example.json](config.soloist.example.json).
+
 ## Configuration
 
 The file [config.schema.json](config.schema.json) contains the schema for the configuration file and descriptions for each field. `snapcast-multiroom` will also accept the env var `CONFIG_PATH` to change the default location from `/config.json`.

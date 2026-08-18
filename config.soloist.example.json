@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JoeyEamigh/snapcast-multiroom/main/config.schema.json",
+  "serverAddress": "127.0.0.1:1705",
+  "devices": [
+    {
+      "id": "device-1",
+      "preferredName": "Device One"
+    },
+    {
+      "id": "device-1-subwoofer",
+      "preferredName": "Device One Subwoofer"
+    },
+    {
+      "id": "device-2",
+      "preferredName": "Device Two"
+    }
+  ],
+  "groups": [
+    {
+      "name": "group-1",
+      "devices": [
+        "device-1",
+        "device-1-subwoofer"
+      ]
+    },
+    {
+      "name": "group-2",
+      "devices": [
+        "device-2"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "id": "Group-One-Spotify",
+      "stream": "pipe:///run/snapfifo/group_one_spotify?name=Group-One-Spotify&mode=create&sampleformat=44100%3A24%3A2&codec=flac&silence_threshold_percent=0.1&idle_threshold=5000&controlscript=snapcast-soloist&controlscriptparams=--device-name%20%22Group%20One%22%20--initial-volume%2030",
+      "groups": [
+        "group-1"
+      ],
+      "volumeControl": "source"
+    },
+    {
+      "id": "Group-Two-Spotify",
+      "stream": "pipe:///run/snapfifo/group_two_spotify?name=Group-Two-Spotify&mode=create&sampleformat=44100%3A24%3A2&codec=flac&silence_threshold_percent=0.1&idle_threshold=5000&controlscript=snapcast-soloist&controlscriptparams=--device-name%20%22Group%20Two%22%20--initial-volume%2030",
+      "groups": [
+        "group-2"
+      ],
+      "volumeControl": "source"
+    },
+    {
+      "id": "Both-Groups-Spotify",
+      "stream": "pipe:///run/snapfifo/both_groups_spotify?name=Both-Groups-Spotify&mode=create&sampleformat=44100%3A24%3A2&codec=flac&silence_threshold_percent=0.1&idle_threshold=5000&controlscript=snapcast-soloist&controlscriptparams=--device-name%20%22Both%20Groups%22%20--initial-volume%2030",
+      "groups": [
+        "group-1",
+        "group-2"
+      ],
+      "volumeControl": "source"
+    }
+  ]
+}
